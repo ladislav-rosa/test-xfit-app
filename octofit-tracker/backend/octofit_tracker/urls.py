@@ -39,8 +39,17 @@ def api_root(request, format=None):
         'leaderboards': reverse('leaderboard-list', request=request, format=format),
     })
 
+import os
+
+# Get codespace name from environment variable
+codespace_name = os.environ.get('CODESPACE_NAME', '')
+if codespace_name:
+    api_prefix = f'https://{codespace_name}-8000.app.github.dev/api/'
+else:
+    api_prefix = 'api/'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),
+    path(api_prefix, include(router.urls)),
     path('', api_root, name='api-root'),
 ]
